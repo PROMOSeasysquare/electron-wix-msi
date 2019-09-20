@@ -40,6 +40,23 @@
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="{{ShortcutFolderName}}"/>
       </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop">
+        <Component Id="ApplicationShortcutDesktop" Guid="*">
+            <Shortcut Id="ApplicationDesktopShortcut"
+                Name="{{ShortcutName}}"
+                Description="{{ApplicationDescription}}"
+                Target="[APPLICATIONROOTDIRECTORY]{{ApplicationBinary}}.exe"
+                WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+            <RemoveFolder Id="DesktopFolder" On="uninstall"/>
+            <RegistryValue
+                Root="HKCU"
+                Key="Software\Microsoft\{{ApplicationShortName}}"
+                Name="installed"
+                Type="integer"
+                Value="1"
+                KeyPath="yes"/>
+        </Component>
+      </Directory>
     </Directory>
 
     <!-- Step 3: Add app to Start Menu -->
@@ -66,6 +83,7 @@
     <Feature Id="MainApplication" Title="Main Application" Level="1">
 <!-- {{ComponentRefs}} -->
       <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="ApplicationShortcutDesktop" />
     </Feature>
   </Product>
 </Wix>

@@ -127,6 +127,7 @@ export class MSICreator {
    * @returns {Promise<{ wxsFile: string, wxsContent: string }>}
    */
   public async create(): Promise<{ wxsFile: string, wxsContent: string }> {
+    console.log("my modified module");
     const { files, directories } = await getDirectoryStructure(this.appDirectory);
 
     this.files = files;
