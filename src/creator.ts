@@ -36,6 +36,7 @@ export interface MSICreatorOptions {
   certificatePassword?: string;
   arch?: 'x64' | 'ia64'| 'x86';
   shortcutIcon : string;
+  outputFilenameWithoutExtension? : string;
 }
 
 export interface UIOptions {
@@ -87,6 +88,7 @@ export class MSICreator {
   public signWithParams?: string;
   public arch: 'x64' | 'ia64'| 'x86' = 'x86';
   public shortcutIcon : string;
+  public outputFilename? : string;
 
   public ui: UIOptions | boolean;
 
@@ -114,6 +116,7 @@ export class MSICreator {
     this.upgradeCode = options.upgradeCode || uuid();
     this.version = options.version;
     this.arch = options.arch || 'x86';
+    this.outputFilename = options.outputFilenameWithoutExtension;
 
     this.appUserModelId = options.appUserModelId
       || `com.squirrel.${this.shortName}.${this.exe}`;
@@ -182,7 +185,7 @@ export class MSICreator {
       throw new Error('Tree does not exist');
     }
 
-    const target = path.join(this.outputDirectory, `${this.exe}.wxs`);
+    const target = path.join(this.outputDirectory, this.outputFilename ? `${this.outputFilename}.wxs` : `${this.exe}.wxs`);
     const base = path.basename(this.appDirectory);
     const directories = await this.getDirectoryForTree(
       this.tree, base, 8, ROOTDIR_NAME, this.programFilesFolderName);
@@ -215,6 +218,8 @@ export class MSICreator {
       '{{ShortcutIcon}}' : this.shortcutIcon || 'heyyeah'
     };
 
+    // target is output filename
+    console.log(`target: ${target}`);
     const completeTemplate = replaceInString(this.wixTemplate, scaffoldReplacements);
     const output = await replaceToFile(completeTemplate, target, replacements);
 
