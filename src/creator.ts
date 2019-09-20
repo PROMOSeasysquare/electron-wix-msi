@@ -37,6 +37,7 @@ export interface MSICreatorOptions {
   arch?: 'x64' | 'ia64'| 'x86';
   shortcutIcon : string;
   outputFilenameWithoutExtension? : string;
+  deleteCreationFilesAfterCompile? : boolean;
 }
 
 export interface UIOptions {
@@ -89,6 +90,7 @@ export class MSICreator {
   public arch: 'x64' | 'ia64'| 'x86' = 'x86';
   public shortcutIcon : string;
   public outputFilename? : string;
+  public deleteCreationFilesAfterCompile: boolean;
 
   public ui: UIOptions | boolean;
 
@@ -117,6 +119,7 @@ export class MSICreator {
     this.version = options.version;
     this.arch = options.arch || 'x86';
     this.outputFilename = options.outputFilenameWithoutExtension;
+    this.deleteCreationFilesAfterCompile = options.deleteCreationFilesAfterCompile || false;
 
     this.appUserModelId = options.appUserModelId
       || `com.squirrel.${this.shortName}.${this.exe}`;
@@ -171,7 +174,36 @@ export class MSICreator {
     const { msiFile } = await this.createMsi();
     await this.signMSI(msiFile);
 
+    if (this.deleteCreationFilesAfterCompile) {
+      await this.deleteCreationFiles(wixobjFile);
+    }
+
     return { wixobjFile, msiFile };
+  }
+
+  public async deleteCreationFiles(wixobjFile: string) {
+      const wixpdb = wixobjFile.replace(/\.wixobj$/, '.wixpdb');
+      const wxs = wixobjFile.replace(/\.wixobj$/, '.wxs');
+
+      console.log(`wixobjFile: ${wixobjFile}`);
+      console.log(`wxs: ${wxs}`);
+      console.log(`wixpd: ${wixpdb}`);
+
+      try {
+        await fs.unlink(wixobjFile);
+      } catch(e) {
+        console.error(e);
+      }
+      try {
+        await fs.unlink(wxs);
+      } catch(e) {
+        console.error(e);
+      }
+      try {
+        await fs.unlink(wixpdb);
+      } catch(e) {
+        console.error(e);
+      }
   }
 
   /**
