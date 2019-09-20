@@ -35,6 +35,7 @@ export interface MSICreatorOptions {
   certificateFile?: string;
   certificatePassword?: string;
   arch?: 'x64' | 'ia64'| 'x86';
+  shortcutIcon : string;
 }
 
 export interface UIOptions {
@@ -85,6 +86,7 @@ export class MSICreator {
   public certificatePassword?: string;
   public signWithParams?: string;
   public arch: 'x64' | 'ia64'| 'x86' = 'x86';
+  public shortcutIcon : string;
 
   public ui: UIOptions | boolean;
 
@@ -117,6 +119,7 @@ export class MSICreator {
       || `com.squirrel.${this.shortName}.${this.exe}`;
 
     this.ui = options.ui !== undefined ? options.ui : false;
+    this.shortcutIcon = options.shortcutIcon;
   }
 
   /**
@@ -127,7 +130,6 @@ export class MSICreator {
    * @returns {Promise<{ wxsFile: string, wxsContent: string }>}
    */
   public async create(): Promise<{ wxsFile: string, wxsContent: string }> {
-    console.log("my modified module");
     const { files, directories } = await getDirectoryStructure(this.appDirectory);
 
     this.files = files;
@@ -197,6 +199,7 @@ export class MSICreator {
       '{{ApplicationDescription}}': this.description,
       '{{ApplicationName}}': this.name,
       '{{ApplicationShortcutGuid}}': uuid(),
+      '{{ApplicationDesktopShortcutGuid}}': uuid(),
       '{{ApplicationShortName}}': this.shortName,
       '{{AppUserModelId}}': this.appUserModelId,
       '{{Language}}': this.language.toString(10),
@@ -209,6 +212,7 @@ export class MSICreator {
       '{{ProgramFilesFolder}}': this.arch === 'x86' ? 'ProgramFilesFolder' : 'ProgramFiles64Folder',
       '{{ProcessorArchitecture}}' : this.arch,
       '{{Win64YesNo}}' : this.arch === 'x86' ? 'no' : 'yes',
+      '{{ShortcutIcon}}' : this.shortcutIcon || 'heyyeah'
     };
 
     const completeTemplate = replaceInString(this.wixTemplate, scaffoldReplacements);

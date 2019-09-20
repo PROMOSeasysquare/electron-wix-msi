@@ -16,6 +16,7 @@
              Comments="Windows Installer Package"
              Platform="{{Platform}}"/>
     <Media Id="1" Cabinet="product.cab" EmbedCab="yes"/>
+    <Icon Id="ShortcutIcon" SourceFile="{{ShortcutIcon}}" />
 
     <!-- Handle Updates -->
     <Upgrade Id="{{UpgradeCode}}">
@@ -40,13 +41,15 @@
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="{{ShortcutFolderName}}"/>
       </Directory>
+      <!-- Desktop Shortcut Icon -->
       <Directory Id="DesktopFolder" Name="Desktop">
-        <Component Id="ApplicationShortcutDesktop" Guid="*">
+        <Component Id="ApplicationShortcutDesktop" Guid="{{ApplicationDesktopShortcutGuid}}">
             <Shortcut Id="ApplicationDesktopShortcut"
                 Name="{{ShortcutName}}"
                 Description="{{ApplicationDescription}}"
                 Target="[APPLICATIONROOTDIRECTORY]{{ApplicationBinary}}.exe"
-                WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+                WorkingDirectory="APPLICATIONROOTDIRECTORY"
+                Icon="ShortcutIcon" />
             <RemoveFolder Id="DesktopFolder" On="uninstall"/>
             <RegistryValue
                 Root="HKCU"
@@ -66,7 +69,8 @@
                   Name="{{ShortcutName}}"
                   Description="{{ApplicationDescription}}"
                   Target="[APPLICATIONROOTDIRECTORY]{{ApplicationBinary}}.exe"
-                  WorkingDirectory="APPLICATIONROOTDIRECTORY">
+                  WorkingDirectory="APPLICATIONROOTDIRECTORY"
+                  Icon="ShortcutIcon" >
           <ShortcutProperty Key="System.AppUserModel.ID" Value="{{AppUserModelId}}" />
         </Shortcut>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
