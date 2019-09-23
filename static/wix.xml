@@ -35,7 +35,9 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <!-- Installation files to %PROGRAMFILES% -->
       <Directory Id="{{ProgramFilesFolder}}">
+        <Directory Id="ProgramFilesEasysquareFolder" Name="easysquare">
 <!-- {{Directories}} -->
+        </Directory>
       </Directory>
       <!-- Start Menu -->
       <Directory Id="ProgramMenuFolder">
