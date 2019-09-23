@@ -185,22 +185,21 @@ export class MSICreator {
       const wixpdb = wixobjFile.replace(/\.wixobj$/, '.wixpdb');
       const wxs = wixobjFile.replace(/\.wixobj$/, '.wxs');
 
-      console.log(`wixobjFile: ${wixobjFile}`);
-      console.log(`wxs: ${wxs}`);
-      console.log(`wixpd: ${wixpdb}`);
-
       try {
         await fs.unlink(wixobjFile);
+        console.log(`deleted: ${wixobjFile}`);
       } catch(e) {
         console.error(e);
       }
       try {
         await fs.unlink(wxs);
+        console.log(`deleted: ${wxs}`);
       } catch(e) {
         console.error(e);
       }
       try {
         await fs.unlink(wixpdb);
+        console.log(`wixpd: ${wixpdb}`);
       } catch(e) {
         console.error(e);
       }
